@@ -3,12 +3,17 @@ package com.sist.web.entity;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.Data;
 /*
@@ -58,17 +63,32 @@ import lombok.Data;
  * 
  */
 @Entity // 오라클 column과 매칭
-@Table(name="board")
+@Table(name="jpaboard")
 @DynamicUpdate // 필요시에 업데이트 설정
 @Data
+@DynamicInsert
+@SequenceGenerator(
+		name="jpb_no_seq",
+		sequenceName = "jpb_no_seq",
+		allocationSize = 1
+) // 시퀀스
+// Entity == Column : 설정이 종료
 public class BoardEntity {
 	@Id // 자동 증가 컬럼 => 자동으로 SQL문장을 제작
+	// 시퀀스 이름 등록
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "jpb_no_seq") // 시퀀스
 	private int no;
+	
 	private String name,subject,content;
+	
 	@Column(insertable = true,updatable = false)
 	private String pwd;
+	
+	@ColumnDefault("0")
 	private int hit;
+	
 	@Column(insertable = true,updatable = false)
+	@ColumnDefault("SYSDATE")
 	private String regdate;
 	
 	@PrePersist // 날짜 변환
