@@ -118,7 +118,7 @@ public class BoardController {
 	public String board_delete(@RequestParam("no") int no, Model model)
 	{
 		model.addAttribute("no", no);
-		return "/board/delete";
+		return "board/delete";
 	}
 	
 	@PostMapping("delete_ok")
@@ -134,7 +134,7 @@ public class BoardController {
 		
 		model.addAttribute("res", res);
 		
-		return "/board/delete_ok";
+		return "board/delete_ok";
 	}
 	
 	@GetMapping("update")
@@ -144,7 +144,7 @@ public class BoardController {
 		
 		model.addAttribute("vo", vo);
 		
-		return "/board/update";
+		return "board/update";
 	}
 	
 	// 서버는 동일
@@ -174,6 +174,6 @@ public class BoardController {
 		model.addAttribute("res", res);
 		model.addAttribute("no", vo.getNo());
 		
-		return "/board/update_ok";
+		return "board/update_ok";
 	}
 }
