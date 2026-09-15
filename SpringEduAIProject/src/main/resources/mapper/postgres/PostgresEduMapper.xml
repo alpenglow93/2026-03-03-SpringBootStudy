@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sist.web.mapper.postgres.PostgresEduMapper">
+	<!-- 
+		최신버전
+		parameterType : 생략이 가능
+		= insert(), update(), delete()
+	 -->
+	<insert id="saveCourseVector" parameterType="com.sist.web.vo.CourseVectorVO">
+		INSERT INTO course_vector(
+			course_no,
+			title,
+			content,
+			instructor_no,
+			chunk_no,
+			embedding
+		)
+		VALUES(
+			#{course_no},
+			#{title},
+			#{content},
+			#{instructor_no},
+			#{chunk_no},
+			#{embedding}::vector
+		)
+	</insert>
+	
+	<insert id="saveQuestionVector" parameterType="com.sist.web.vo.QuestionVectorVO">
+		INSERT INTO question_vector
+		(
+			question_no,
+		    title,
+		    description,
+		    theme,
+		    type,
+		    difficulty,
+		    answer,
+		    option1,
+		    option2,
+		    option3,
+		    option4,
+		    content,
+		    embedding
+		)
+		VALUES
+		(
+			#{question_no},
+		    #{title},
+		    #{description},
+		    #{theme},
+		    #{type},
+		    #{difficulty},
+		    #{answer},
+		    #{option1},
+		    #{option2},
+		    #{option3},
+		    #{option4},
+		    #{content},
+		    #{embedding}::vector
+		)
+		ON CONFLICT(question_no)
+		DO UPDATE SET
+		    title=EXCLUDED.title,
+		    description=EXCLUDED.description,
+		    theme=EXCLUDED.theme,
+		    type=EXCLUDED.type,
+		    difficulty=EXCLUDED.difficulty,
+		    answer=EXCLUDED.answer,
+		    option1=EXCLUDED.option1,
+		    option2=EXCLUDED.option2,
+		    option3=EXCLUDED.option3,
+		    option4=EXCLUDED.option4,
+		    content=EXCLUDED.content,
+		    embedding=EXCLUDED.embedding
+	</insert>
+	<!-- 
+		ON CONFLICT(question_no)
+		DO UPDATE SET
+		=> 중복이 됐을때 insert가 되지 않고 update를 하게 만든다
+		=> 중복 생성 방지
+		==> oracle에는 없다 (postgresSQL)
+		
+		=> oracle 버전
+		INSERT INTO question_vector q
+		USING(
+			SELECT #{question_no} question_no, #{title} title	
+		) s
+		ON(q.question=s.question.no)
+		WHEN MATCHED THEN
+			UPDATE ~
+		WHEN NOT MATCHED THEN
+			INSERT ~
+	 -->
+</mapper>

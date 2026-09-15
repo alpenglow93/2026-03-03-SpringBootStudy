@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sist.web.mapper.oracle.OracleEduMapper">
+	<select id="courseAllData" resultType="com.sist.web.vo.CourseVO">
+		SELECT * FROM course
+		ORDER BY no ASC
+		OFFSET 0 ROWS FETCH NEXT 200 ROWS ONLY
+	</select>
+	<!-- 
+		question_no BIGINT NOT NULL,
+	    course_no BIGINT,
+	    title VARCHAR(4000) NOT NULL,
+	    description TEXT,
+	    theme INTEGER,
+	    type INTEGER,
+	    difficulty INTEGER NOT NULL,
+	    answer VARCHAR(2000) NOT NULL,
+	    option1 VARCHAR(2000),
+	    option2 VARCHAR(2000),
+	    option3 VARCHAR(2000),
+	    option4 VARCHAR(2000),
+	    content TEXT,
+	    embedding VECTOR(768),
+	 -->
+	<resultMap type="com.sist.web.vo.QuestionVO" id="questionMap">
+		<result property="evo.option1" column="option1"/>
+		<!-- 
+			ExamOption evo = new ExamOption()
+			evo.setOption1()
+		 -->
+		<result property="evo.option2" column="option2"/>
+		<result property="evo.option3" column="option3"/>
+		<result property="evo.option4" column="option4"/>
+	</resultMap>
+	<select id="questionAllData" resultMap="questionMap">
+		SELECT q.no,q.title,q.answer,q.score,q.description,q.theme,q.type,q.difficulty,
+				o.option1,o.option2,o.option3,o.option4
+		FROM exam_question q
+		LEFT JOIN exam_option o
+		ON q.no=o.question_no
+		ORDER BY q.no ASC
+		OFFSET 0 ROWS FETCH NEXT 200 ROWS ONLY
+	</select>
+</mapper>
